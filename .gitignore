@@ -1,0 +1,19 @@
+node_modules/
+.env
+.env.*
+.DS_Store
+Thumbs.db
+
+# Build output and local tool caches
+dist/
+build/
+.next/
+.vercel/
+.netlify/
+.cache/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

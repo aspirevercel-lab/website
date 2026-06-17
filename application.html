@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en-NZ">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Apply or Register Interest | Aspire Community Support</title>
+  <meta name="description" content="Apply for a role or register your expression of interest with Aspire Community Support in Waikato.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="nav-wrap"><a class="brand" href="index.html"><img src="assets/aspire-logo.jpg" alt="Aspire Community Support"></a><button class="nav-toggle" type="button" aria-expanded="false" aria-label="Open menu">=</button><nav class="nav-links"><a href="about.html">About Aspire</a><a href="what-we-offer.html">What We Offer</a><a href="self-advocacy.html">Self Advocacy</a><a href="team.html">Meet The Team</a><a href="foundation.html">Foundation</a><a href="news-events.html">News & Events</a><a href="join.html" aria-current="page">Join The Team</a><a href="contact.html">Contact</a><div class="language-switch" aria-label="Language selection"><button type="button" data-lang-option="en" aria-pressed="true">English</button><button type="button" data-lang-option="mi" aria-pressed="false">Māori</button></div></nav></div></header>
+  <main id="main">
+    <section class="page-hero hero-contact"><div class="section-inner"><span class="eyebrow">Careers</span><h1>Apply or register your interest.</h1><p>Tell us about the kind of role you are interested in, upload your CV, and add a cover letter or write one here.</p></div></section>
+    <section class="section">
+      <div class="section-inner application-layout">
+        <div>
+          <span class="kicker">Expression of interest</span>
+          <h2>A simple first step.</h2>
+          <p class="section-lead">This form is designed for job applications and expressions of interest. Once connected to SharePoint, submissions can notify the right Aspire people and keep applicant details in a controlled location.</p>
+          <div class="notice application-note">
+            <strong>Privacy note</strong>
+            <p>Please only include information you are comfortable sharing for recruitment. CVs and cover letters should be stored in a secure recruitment location after launch.</p>
+          </div>
+        </div>
+        <form class="card application-form" data-application-form enctype="multipart/form-data">
+          <label>
+            Role or area of interest
+            <select name="role" data-role-field required>
+              <option value="">Select a role</option>
+              <option>Support Worker</option>
+              <option>Foundation Community Support</option>
+              <option>Leadership or administration</option>
+              <option>General expression of interest</option>
+            </select>
+          </label>
+          <div class="form-grid">
+            <label>
+              First name
+              <input name="firstName" autocomplete="given-name" required>
+            </label>
+            <label>
+              Last name
+              <input name="lastName" autocomplete="family-name" required>
+            </label>
+          </div>
+          <div class="form-grid">
+            <label>
+              Email
+              <input type="email" name="email" autocomplete="email" required>
+            </label>
+            <label>
+              Phone
+              <input type="tel" name="phone" autocomplete="tel" required>
+            </label>
+          </div>
+          <label>
+            Location
+            <input name="location" autocomplete="address-level2" placeholder="Hamilton, Waikato, or nearby area">
+          </label>
+          <label>
+            Work availability
+            <select name="availability">
+              <option value="">Select availability</option>
+              <option>Full time</option>
+              <option>Part time</option>
+              <option>Casual</option>
+              <option>Flexible</option>
+            </select>
+          </label>
+          <label>
+            Upload CV
+            <input type="file" name="cv" accept=".pdf,.doc,.docx">
+          </label>
+          <label>
+            Upload cover letter
+            <input type="file" name="coverLetterFile" accept=".pdf,.doc,.docx">
+          </label>
+          <label>
+            Or write your cover letter here
+            <textarea name="coverLetterText" placeholder="Tell us why you are interested in working with Aspire."></textarea>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" name="privacyConsent" required>
+            I consent to Aspire using my details for recruitment purposes.
+          </label>
+          <button class="button primary" type="submit">Submit application</button>
+          <p class="form-status" data-form-status aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="footer-inner"><div class="footer-bottom">© <span data-year></span> Aspire Community Support.</div></div></footer><script src="testimonials-data.js"></script><script src="script.js"></script>
+</body>
+</html>
