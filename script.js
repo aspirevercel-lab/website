@@ -117,6 +117,86 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
   });
 });
 
+const socialLinks = [
+  {
+    label: "Facebook",
+    shortLabel: "Fb",
+    href: "https://www.facebook.com/aspire.community.support"
+  },
+  {
+    label: "YouTube",
+    shortLabel: "Yt",
+    href: "https://www.youtube.com/@aspire-communitysupport8408"
+  },
+  {
+    label: "Instagram",
+    shortLabel: "Ig",
+    href: "#",
+    placeholder: true
+  },
+  {
+    label: "LinkedIn",
+    shortLabel: "In",
+    href: "#",
+    placeholder: true
+  },
+  {
+    label: "TikTok",
+    shortLabel: "Tk",
+    href: "#",
+    placeholder: true
+  }
+];
+
+document.querySelectorAll(".site-footer").forEach((footerNode) => {
+  if (footerNode.querySelector(".footer-social")) {
+    return;
+  }
+
+  const social = document.createElement("div");
+  social.className = "footer-social";
+
+  const title = document.createElement("strong");
+  title.textContent = "Follow Aspire";
+  social.append(title);
+
+  const list = document.createElement("div");
+  list.className = "social-links";
+
+  socialLinks.forEach((item) => {
+    const link = document.createElement("a");
+    link.href = item.href;
+    link.textContent = item.shortLabel;
+    link.setAttribute("aria-label", item.placeholder ? `${item.label} coming soon` : item.label);
+    link.title = item.placeholder ? `${item.label} coming soon` : item.label;
+
+    if (item.placeholder) {
+      link.className = "is-placeholder";
+      link.addEventListener("click", (event) => event.preventDefault());
+    } else {
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+    }
+
+    list.append(link);
+  });
+
+  social.append(list);
+
+  const connectLinks = Array.from(footerNode.querySelectorAll(".footer-links")).find((linksNode) => {
+    const heading = linksNode.querySelector("strong");
+    return heading && heading.textContent.trim() === "Connect";
+  });
+  const footerInner = footerNode.querySelector(".footer-inner");
+  const footerBottom = footerNode.querySelector(".footer-bottom");
+
+  if (connectLinks) {
+    connectLinks.append(social);
+  } else if (footerInner && footerBottom) {
+    footerInner.insertBefore(social, footerBottom);
+  }
+});
+
 const newsletterMount = document.querySelector("[data-newsletters]");
 
 function appendText(parent, tagName, text, className) {
