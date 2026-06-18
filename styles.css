@@ -472,6 +472,10 @@ p {
   margin-top: 28px;
 }
 
+.governance-card-grid {
+  margin: 42px 0 34px;
+}
+
 .news-card {
   overflow: hidden;
   padding: 0;
