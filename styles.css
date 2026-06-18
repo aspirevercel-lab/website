@@ -294,7 +294,8 @@ a {
   align-items: end;
   background:
     linear-gradient(90deg, rgba(18, 48, 57, 0.86) 0%, rgba(18, 48, 57, 0.66) 44%, rgba(18, 48, 57, 0.18) 78%),
-    url("assets/aspire-hero.png") center / cover no-repeat;
+    url("assets/aspire-hero.png") center / cover no-repeat,
+    #102b33;
   color: #fff;
 }
 
@@ -1194,7 +1195,8 @@ textarea {
     min-height: 680px;
     background:
       linear-gradient(180deg, rgba(18, 48, 57, 0.86) 0%, rgba(18, 48, 57, 0.62) 66%, rgba(18, 48, 57, 0.3) 100%),
-      url("assets/aspire-hero.png") center / cover no-repeat;
+      url("assets/aspire-hero.png") center / cover no-repeat,
+      #102b33;
   }
 
   .split,
