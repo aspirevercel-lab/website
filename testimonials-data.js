@@ -1,22 +1,22 @@
 window.AspireTestimonials = [
   {
-    quote: "Aspire supports people to shape the life they choose.",
-    name: "Aspire story",
+    quote: "Support should begin with the person, their goals, and the life they want to build.",
+    name: "Aspire approach",
     context: "Person-directed support"
   },
   {
-    quote: "At Aspire, your voice matters.",
-    name: "Self-advocacy story",
+    quote: "People have the right to speak up, ask questions, make choices, and be heard.",
+    name: "Self-advocacy",
     context: "Rights and advocacy"
   },
   {
-    quote: "Small steps can open new opportunities.",
-    name: "Foundation story",
+    quote: "Community connection can start with small steps: trying something new, meeting people, and building confidence.",
+    name: "Foundation",
     context: "Community participation"
   },
   {
-    quote: "The team listens first and works alongside people and whānau.",
-    name: "Whānau feedback",
+    quote: "Good support includes whānau, trusted people, and clear conversations about what matters.",
+    name: "Working together",
     context: "Family connection"
   }
 ];

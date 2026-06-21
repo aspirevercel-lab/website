@@ -5,19 +5,19 @@
 // Do not use C:\ local paths or file:/// links after publishing; they will not work online.
 window.AspireNewsPosts = [
   {
-    title: "A place for approved Aspire stories",
+    title: "Stories from everyday support",
     date: "2026-06-11",
     category: "Stories",
     image: "",
-    summary: "Share privacy-safe, consent-approved stories about people building independence, confidence, friendships, skills, and community connection.",
+    summary: "Aspire shares stories with care and permission, focusing on choice, independence, friendships, skills, and community connection.",
     link: "stories.html"
   },
   {
-    title: "Add your next Aspire story",
+    title: "Community news from Aspire",
     date: "2026-06-11",
-    category: "Story",
+    category: "News",
     image: "",
-    summary: "Use this space for privacy-safe stories, community achievements, Foundation updates, self-advocacy news, or service announcements.",
+    summary: "Updates from residential support, Foundation, self-advocacy, and the wider Aspire community will appear here as they are confirmed.",
     link: ""
   }
 ];

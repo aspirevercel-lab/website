@@ -409,12 +409,12 @@ const footer = document.querySelector(".site-footer");
 if (footer && window.AspireTestimonials && window.AspireTestimonials.length) {
   const section = document.createElement("section");
   section.className = "testimonial-strip";
-  section.setAttribute("aria-label", "Stories and testimonials");
+  section.setAttribute("aria-label", "Aspire values and story themes");
 
   const inner = document.createElement("div");
   inner.className = "testimonial-inner";
-  appendText(inner, "span", "Stories & testimonials", "kicker");
-  appendText(inner, "h2", "What people say about Aspire");
+  appendText(inner, "span", "People first", "kicker");
+  appendText(inner, "h2", "What guides Aspire support");
 
   const viewport = document.createElement("div");
   viewport.className = "testimonial-marquee";
