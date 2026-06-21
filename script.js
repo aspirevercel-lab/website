@@ -281,7 +281,7 @@ function setupGlobalSearch() {
   searchButton.setAttribute("aria-haspopup", "dialog");
   searchButton.setAttribute("aria-expanded", "false");
   searchButton.setAttribute("aria-label", "Search website");
-  searchButton.textContent = "Search";
+  searchButton.textContent = "";
   if (navLinksNode) {
     navLinksNode.insertBefore(searchButton, navLinksNode.querySelector(".language-switch"));
   } else {
@@ -388,6 +388,154 @@ function setupBackToTop() {
 }
 
 setupBackToTop();
+
+const accessibilityDefaults = {
+  textSize: 0,
+  grayscale: false,
+  contrast: "default",
+  underlineLinks: false,
+  readableFont: false
+};
+
+function getAccessibilityState() {
+  try {
+    return {
+      ...accessibilityDefaults,
+      ...JSON.parse(localStorage.getItem("aspire-accessibility") || "{}")
+    };
+  } catch {
+    return { ...accessibilityDefaults };
+  }
+}
+
+function saveAccessibilityState(state) {
+  localStorage.setItem("aspire-accessibility", JSON.stringify(state));
+}
+
+function applyAccessibilityState(state) {
+  const root = document.documentElement;
+  root.classList.toggle("a11y-text-small", state.textSize < 0);
+  root.classList.toggle("a11y-text-large", state.textSize === 1);
+  root.classList.toggle("a11y-text-larger", state.textSize >= 2);
+  root.classList.toggle("a11y-grayscale", state.grayscale);
+  root.classList.toggle("a11y-high-contrast", state.contrast === "high");
+  root.classList.toggle("a11y-negative-contrast", state.contrast === "negative");
+  root.classList.toggle("a11y-light-background", state.contrast === "light");
+  root.classList.toggle("a11y-underline-links", state.underlineLinks);
+  root.classList.toggle("a11y-readable-font", state.readableFont);
+}
+
+function setupAccessibilityTools() {
+  if (document.querySelector(".accessibility-widget")) {
+    return;
+  }
+
+  let state = getAccessibilityState();
+  applyAccessibilityState(state);
+
+  const widget = document.createElement("div");
+  widget.className = "accessibility-widget";
+
+  const toggleButton = document.createElement("button");
+  toggleButton.className = "accessibility-toggle";
+  toggleButton.type = "button";
+  toggleButton.setAttribute("aria-expanded", "false");
+  toggleButton.setAttribute("aria-controls", "accessibility-panel");
+  toggleButton.setAttribute("aria-label", "Open accessibility tools");
+  toggleButton.textContent = "\u267F\uFE0E";
+
+  const panel = document.createElement("div");
+  panel.className = "accessibility-panel";
+  panel.id = "accessibility-panel";
+  panel.setAttribute("hidden", "");
+  const title = document.createElement("h2");
+  title.textContent = "Accessibility Tools";
+  panel.append(title);
+
+  function updateState(updater) {
+    state = updater({ ...state });
+    saveAccessibilityState(state);
+    applyAccessibilityState(state);
+  }
+
+  function addTool(label, action) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "accessibility-tool";
+    button.textContent = label;
+    button.addEventListener("click", action);
+    panel.append(button);
+    return button;
+  }
+
+  addTool("Increase Text", () => updateState((next) => {
+    next.textSize = Math.min(2, next.textSize + 1);
+    return next;
+  }));
+  addTool("Decrease Text", () => updateState((next) => {
+    next.textSize = Math.max(-1, next.textSize - 1);
+    return next;
+  }));
+  addTool("Grayscale", () => updateState((next) => {
+    next.grayscale = !next.grayscale;
+    return next;
+  }));
+  addTool("High Contrast", () => updateState((next) => {
+    next.contrast = next.contrast === "high" ? "default" : "high";
+    return next;
+  }));
+  addTool("Negative Contrast", () => updateState((next) => {
+    next.contrast = next.contrast === "negative" ? "default" : "negative";
+    return next;
+  }));
+  addTool("Light Background", () => updateState((next) => {
+    next.contrast = next.contrast === "light" ? "default" : "light";
+    return next;
+  }));
+  addTool("Links Underline", () => updateState((next) => {
+    next.underlineLinks = !next.underlineLinks;
+    return next;
+  }));
+  addTool("Readable Font", () => updateState((next) => {
+    next.readableFont = !next.readableFont;
+    return next;
+  }));
+  addTool("Reset", () => {
+    state = { ...accessibilityDefaults };
+    saveAccessibilityState(state);
+    applyAccessibilityState(state);
+  });
+
+  function openPanel() {
+    panel.removeAttribute("hidden");
+    toggleButton.setAttribute("aria-expanded", "true");
+  }
+
+  function closePanel() {
+    panel.setAttribute("hidden", "");
+    toggleButton.setAttribute("aria-expanded", "false");
+  }
+
+  toggleButton.addEventListener("click", () => {
+    if (panel.hasAttribute("hidden")) {
+      openPanel();
+    } else {
+      closePanel();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !panel.hasAttribute("hidden")) {
+      closePanel();
+      toggleButton.focus();
+    }
+  });
+
+  widget.append(panel, toggleButton);
+  document.body.append(widget);
+}
+
+setupAccessibilityTools();
 
 document.querySelectorAll("[data-contact-form]").forEach((form) => {
   const enquiryType = form.querySelector("[data-enquiry-type]");
