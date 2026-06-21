@@ -73,6 +73,105 @@ document.querySelectorAll("[data-i18n], .nav-links > a").forEach((node) => {
   defaultText.set(node, node.textContent);
 });
 
+const searchItems = [
+  {
+    title: "What We Offer",
+    url: "what-we-offer.html",
+    description: "Residential Support, Flexible Disability Support, Supported Living, ACC, EGL, VHN, YPD, and service pathways.",
+    keywords: "services support residential sil supported independent living acc egl funding whaikaha disability waikato"
+  },
+  {
+    title: "Residential Support",
+    url: "what-we-offer.html",
+    description: "24/7 support in community homes for children and adults with disabilities across Waikato.",
+    keywords: "home houses community residential intellectual physical disability 24/7"
+  },
+  {
+    title: "Supported Living (SIL)",
+    url: "what-we-offer.html",
+    description: "Lower-level support for people living in their own homes.",
+    keywords: "sil supported independent living own home whaikaha"
+  },
+  {
+    title: "Funding & Eligibility",
+    url: "funding-eligibility.html",
+    description: "Understand assessment and funding pathways including Disability Support Link, Health New Zealand, MSD, ACC, EGL, and Whaikaha.",
+    keywords: "eligibility funding disability support link nasc health new zealand msd acc egl whaikaha"
+  },
+  {
+    title: "Make a Referral",
+    url: "referral.html",
+    description: "Information for people, whānau, and referrers exploring Aspire services.",
+    keywords: "referral refer enquire support manager access aspire"
+  },
+  {
+    title: "Foundation",
+    url: "foundation.html",
+    description: "Community participation, life skills, wellness, friendships, and employment pathways.",
+    keywords: "foundation community participation life skills wellness employment volunteering clubs activities"
+  },
+  {
+    title: "Self Advocacy",
+    url: "self-advocacy.html",
+    description: "Speaking up, knowing your rights, house meetings, and the Self Advocacy Sub Committee.",
+    keywords: "rights advocacy code of rights speak up sub committee voice"
+  },
+  {
+    title: "About Aspire",
+    url: "about.html",
+    description: "Aspire's story, vision, values, purpose, governance, and board.",
+    keywords: "about story values vision purpose board trustees governance"
+  },
+  {
+    title: "Board Members",
+    url: "board.html",
+    description: "Profiles of Aspire Community Support board members.",
+    keywords: "board trustees neville kevin russell bernadette tia governance"
+  },
+  {
+    title: "Meet The Team",
+    url: "team.html",
+    description: "Aspire leadership and service delivery team members.",
+    keywords: "team leadership service delivery support managers staff"
+  },
+  {
+    title: "News & Events",
+    url: "news-events.html",
+    description: "Aspire news, events, meeting notices, stories, and newsletter archive.",
+    keywords: "news events newsletters stories updates meetings"
+  },
+  {
+    title: "Stories",
+    url: "stories.html",
+    description: "Aspire stories shared with consent, dignity, and privacy.",
+    keywords: "stories testimonials consent privacy person directed support"
+  },
+  {
+    title: "Join The Team",
+    url: "join.html",
+    description: "Current vacancies, expressions of interest, and volunteering with Aspire.",
+    keywords: "jobs careers vacancies support worker volunteer volunteering apply eoi"
+  },
+  {
+    title: "Apply for a Role",
+    url: "application.html",
+    description: "Application and expression of interest form for Aspire roles.",
+    keywords: "application cv cover letter support worker foundation careers"
+  },
+  {
+    title: "Contact",
+    url: "contact.html",
+    description: "Phone, email, post, office address, donations, and enquiry form.",
+    keywords: "contact phone email reception address donation volunteer enquiry"
+  },
+  {
+    title: "Feedback & Complaints",
+    url: "feedback.html",
+    description: "How to raise feedback, complaints, concerns, rights, and advocacy matters.",
+    keywords: "feedback complaint concern rights advocacy improve"
+  }
+];
+
 function setLanguage(language) {
   const isMaori = language === "mi";
   document.documentElement.lang = isMaori ? "mi-NZ" : "en-NZ";
@@ -97,6 +196,198 @@ document.querySelectorAll("[data-lang-option]").forEach((button) => {
 
 const requestedLanguage = new URLSearchParams(window.location.search).get("lang");
 setLanguage(requestedLanguage === "mi" ? "mi" : localStorage.getItem("aspire-language") || "en");
+
+function normalizeSearchText(value) {
+  return (value || "").toString().toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function scoreSearchItem(item, query) {
+  const normalizedQuery = normalizeSearchText(query);
+  if (!normalizedQuery) {
+    return 0;
+  }
+
+  const words = normalizedQuery.split(" ").filter(Boolean);
+  const title = normalizeSearchText(item.title);
+  const description = normalizeSearchText(item.description);
+  const keywords = normalizeSearchText(item.keywords);
+  let score = 0;
+
+  words.forEach((word) => {
+    if (title.includes(word)) {
+      score += 5;
+    }
+    if (keywords.includes(word)) {
+      score += 3;
+    }
+    if (description.includes(word)) {
+      score += 2;
+    }
+  });
+
+  if (title === normalizedQuery) {
+    score += 8;
+  } else if (title.startsWith(normalizedQuery)) {
+    score += 4;
+  }
+
+  return score;
+}
+
+function createSearchResult(item) {
+  const link = document.createElement("a");
+  link.className = "search-result";
+  link.href = item.url;
+  appendText(link, "strong", item.title);
+  appendText(link, "span", item.description);
+  return link;
+}
+
+function renderSearchResults(resultsNode, query) {
+  resultsNode.replaceChildren();
+  const normalizedQuery = normalizeSearchText(query);
+  const results = normalizedQuery
+    ? searchItems
+        .map((item) => ({ item, score: scoreSearchItem(item, normalizedQuery) }))
+        .filter((result) => result.score > 0)
+        .sort((a, b) => b.score - a.score || a.item.title.localeCompare(b.item.title))
+        .slice(0, 8)
+        .map((result) => result.item)
+    : searchItems.slice(0, 6);
+
+  if (!results.length) {
+    const empty = document.createElement("p");
+    empty.className = "search-empty";
+    empty.textContent = "No matches found. Try searching for services, referral, Foundation, SIL, contact, or careers.";
+    resultsNode.append(empty);
+    return;
+  }
+
+  results.forEach((item) => resultsNode.append(createSearchResult(item)));
+}
+
+function setupGlobalSearch() {
+  const header = document.querySelector(".site-header");
+  const navWrap = document.querySelector(".nav-wrap");
+  const navLinksNode = document.querySelector(".nav-links");
+  const navToggle = document.querySelector(".nav-toggle");
+  if (!header || !navWrap || document.querySelector(".search-panel")) {
+    return;
+  }
+
+  const searchButton = document.createElement("button");
+  searchButton.className = "search-open";
+  searchButton.type = "button";
+  searchButton.setAttribute("aria-haspopup", "dialog");
+  searchButton.setAttribute("aria-expanded", "false");
+  searchButton.setAttribute("aria-label", "Search website");
+  searchButton.textContent = "Search";
+  if (navLinksNode) {
+    navLinksNode.insertBefore(searchButton, navLinksNode.querySelector(".language-switch"));
+  } else {
+    navWrap.insertBefore(searchButton, navToggle || navWrap.firstChild);
+  }
+
+  const panel = document.createElement("div");
+  panel.className = "search-panel";
+  panel.setAttribute("role", "dialog");
+  panel.setAttribute("aria-modal", "true");
+  panel.setAttribute("aria-labelledby", "search-title");
+  panel.setAttribute("hidden", "");
+
+  const panelInner = document.createElement("div");
+  panelInner.className = "search-panel-inner";
+  const headerRow = document.createElement("div");
+  headerRow.className = "search-panel-header";
+  const title = document.createElement("h2");
+  title.id = "search-title";
+  title.textContent = "Search Aspire";
+  const closeButton = document.createElement("button");
+  closeButton.className = "search-close";
+  closeButton.type = "button";
+  closeButton.setAttribute("aria-label", "Close search");
+  closeButton.textContent = "Close";
+  headerRow.append(title, closeButton);
+
+  const form = document.createElement("form");
+  form.className = "search-form";
+  const label = document.createElement("label");
+  label.textContent = "Search the website";
+  const input = document.createElement("input");
+  input.type = "search";
+  input.autocomplete = "off";
+  input.placeholder = "Try Foundation, SIL, referral, contact...";
+  label.append(input);
+  form.append(label);
+
+  const hint = document.createElement("p");
+  hint.className = "search-hint";
+  hint.textContent = "Results are from Aspire website pages only.";
+  const results = document.createElement("div");
+  results.className = "search-results";
+  results.setAttribute("aria-live", "polite");
+
+  panelInner.append(headerRow, form, hint, results);
+  panel.append(panelInner);
+  document.body.append(panel);
+
+  function openSearch() {
+    panel.removeAttribute("hidden");
+    searchButton.setAttribute("aria-expanded", "true");
+    renderSearchResults(results, input.value);
+    input.focus();
+  }
+
+  function closeSearch() {
+    panel.setAttribute("hidden", "");
+    searchButton.setAttribute("aria-expanded", "false");
+    searchButton.focus();
+  }
+
+  searchButton.addEventListener("click", openSearch);
+  closeButton.addEventListener("click", closeSearch);
+  panel.addEventListener("click", (event) => {
+    if (event.target === panel) {
+      closeSearch();
+    }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !panel.hasAttribute("hidden")) {
+      closeSearch();
+    }
+  });
+  input.addEventListener("input", () => renderSearchResults(results, input.value));
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const firstResult = results.querySelector(".search-result");
+    if (firstResult) {
+      window.location.href = firstResult.href;
+    }
+  });
+}
+
+setupGlobalSearch();
+
+function setupBackToTop() {
+  const button = document.createElement("button");
+  button.className = "back-to-top";
+  button.type = "button";
+  button.setAttribute("aria-label", "Back to top");
+  button.textContent = "\u2191";
+  document.body.append(button);
+
+  function updateVisibility() {
+    button.classList.toggle("is-visible", window.scrollY > 520);
+  }
+
+  button.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+  window.addEventListener("scroll", updateVisibility, { passive: true });
+  updateVisibility();
+}
+
+setupBackToTop();
 
 document.querySelectorAll("[data-contact-form]").forEach((form) => {
   const enquiryType = form.querySelector("[data-enquiry-type]");
@@ -127,32 +418,64 @@ const socialLinks = [
     label: "YouTube",
     shortLabel: "Yt",
     href: "https://www.youtube.com/@aspire-communitysupport8408"
-  },
-  {
-    label: "Instagram",
-    shortLabel: "Ig",
-    href: "#",
-    placeholder: true
-  },
-  {
-    label: "LinkedIn",
-    shortLabel: "In",
-    href: "#",
-    placeholder: true
-  },
-  {
-    label: "TikTok",
-    shortLabel: "Tk",
-    href: "#",
-    placeholder: true
   }
 ];
 
-document.querySelectorAll(".site-footer").forEach((footerNode) => {
-  if (footerNode.querySelector(".footer-social")) {
-    return;
-  }
+function appendFooterLink(parent, href, label) {
+  const link = document.createElement("a");
+  link.href = href;
+  link.textContent = label;
+  parent.append(link);
+  return link;
+}
 
+function createFooterLinks(titleText, links) {
+  const column = document.createElement("div");
+  column.className = "footer-links";
+  const title = document.createElement("strong");
+  title.textContent = titleText;
+  column.append(title);
+  links.forEach((item) => appendFooterLink(column, item.href, item.label));
+  return column;
+}
+
+function createFooterGrid() {
+  const grid = document.createElement("div");
+  grid.className = "footer-grid";
+
+  const intro = document.createElement("div");
+  const title = document.createElement("h3");
+  title.textContent = "Aspire Community Support";
+  const text = document.createElement("p");
+  text.textContent = "Disability support across Waikato, focused on choice, dignity, connection, and everyday life.";
+  intro.append(title, text);
+
+  grid.append(
+    intro,
+    createFooterLinks("Explore", [
+      { href: "what-we-offer.html", label: "What We Offer" },
+      { href: "foundation.html", label: "Foundation" },
+      { href: "news-events.html", label: "News & Events" },
+      { href: "referral.html", label: "Make a Referral" },
+      { href: "self-advocacy.html", label: "Self Advocacy" }
+    ]),
+    createFooterLinks("Organisation", [
+      { href: "about.html", label: "About Aspire" },
+      { href: "team.html", label: "Meet The Team" },
+      { href: "join.html", label: "Join The Team" },
+      { href: "feedback.html", label: "Feedback & Complaints" }
+    ]),
+    createFooterLinks("Connect", [
+      { href: "contact.html", label: "Contact" },
+      { href: "mailto:reception@aspire.org.nz", label: "Email Aspire" },
+      { href: "tel:+6478390183", label: "Call 07 839 0183" }
+    ])
+  );
+
+  return grid;
+}
+
+function createSocialLinks() {
   const social = document.createElement("div");
   social.className = "footer-social";
 
@@ -167,33 +490,40 @@ document.querySelectorAll(".site-footer").forEach((footerNode) => {
     const link = document.createElement("a");
     link.href = item.href;
     link.textContent = item.shortLabel;
-    link.setAttribute("aria-label", item.placeholder ? `${item.label} coming soon` : item.label);
-    link.title = item.placeholder ? `${item.label} coming soon` : item.label;
-
-    if (item.placeholder) {
-      link.className = "is-placeholder";
-      link.addEventListener("click", (event) => event.preventDefault());
-    } else {
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-    }
-
+    link.setAttribute("aria-label", item.label);
+    link.title = item.label;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
     list.append(link);
   });
 
   social.append(list);
+  return social;
+}
+
+document.querySelectorAll(".site-footer").forEach((footerNode) => {
+  if (footerNode.querySelector(".footer-social")) {
+    return;
+  }
+
+  const footerInner = footerNode.querySelector(".footer-inner");
+  const footerBottom = footerNode.querySelector(".footer-bottom");
+  let footerGrid = footerNode.querySelector(".footer-grid");
+
+  if (footerInner && footerBottom && !footerGrid) {
+    footerGrid = createFooterGrid();
+    footerInner.insertBefore(footerGrid, footerBottom);
+  }
 
   const connectLinks = Array.from(footerNode.querySelectorAll(".footer-links")).find((linksNode) => {
     const heading = linksNode.querySelector("strong");
     return heading && heading.textContent.trim() === "Connect";
   });
-  const footerInner = footerNode.querySelector(".footer-inner");
-  const footerBottom = footerNode.querySelector(".footer-bottom");
 
   if (connectLinks) {
-    connectLinks.append(social);
+    connectLinks.append(createSocialLinks());
   } else if (footerInner && footerBottom) {
-    footerInner.insertBefore(social, footerBottom);
+    footerInner.insertBefore(createSocialLinks(), footerBottom);
   }
 });
 
