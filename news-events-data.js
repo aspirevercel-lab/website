@@ -17,7 +17,7 @@ window.AspireNewsPosts = [
     date: "2026-06-11",
     category: "News",
     image: "",
-    summary: "Updates from residential support, Foundation, self-advocacy, and the wider Aspire community will appear here as they are confirmed.",
+    summary: "Read updates from residential support, Foundation, self-advocacy, and the wider Aspire community.",
     link: ""
   }
 ];
@@ -27,7 +27,7 @@ window.AspireStories = [
     title: "Building confidence in the community",
     person: "Aspire story",
     image: "",
-    summary: "An approved story can show how person-directed support helps someone grow confidence, make choices, and stay connected to community life.",
+    summary: "Stories can show how person-directed support helps someone grow confidence, make choices, and stay connected to community life.",
     quote: "Aspire supports people to shape the life they choose.",
     link: ""
   },
@@ -52,12 +52,12 @@ window.AspireStories = [
 window.AspireEvents = [
   {
     title: "Self-advocacy meeting",
-    date: "To be confirmed",
+    date: "Dates will be shared when confirmed",
     time: "",
     location: "Aspire Community Support",
     category: "Self Advocacy",
     image: "",
-    summary: "Add meeting details, who the event is for, and how people can RSVP or ask questions.",
+    summary: "Self-advocacy meetings create space for people to share ideas, ask questions, and talk about rights and choices.",
     link: "contact.html"
   }
 ];

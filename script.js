@@ -77,7 +77,7 @@ const searchItems = [
   {
     title: "What We Offer",
     url: "what-we-offer.html",
-    description: "Residential Support, Flexible Disability Support, Supported Living, ACC, EGL, VHN, YPD, and service pathways.",
+    description: "Residential Support, Flexible Disability Support, Supported Independent Living, ACC, EGL, VHN, YPD, and service pathways.",
     keywords: "services support residential sil supported independent living acc egl funding whaikaha disability waikato"
   },
   {
@@ -87,7 +87,7 @@ const searchItems = [
     keywords: "home houses community residential intellectual physical disability 24/7"
   },
   {
-    title: "Supported Living (SIL)",
+    title: "Supported Independent Living (SIL)",
     url: "what-we-offer.html",
     description: "Lower-level support for people living in their own homes.",
     keywords: "sil supported independent living own home whaikaha"
@@ -113,7 +113,7 @@ const searchItems = [
   {
     title: "Self Advocacy",
     url: "self-advocacy.html",
-    description: "Speaking up, knowing your rights, house meetings, and the Self Advocacy Sub Committee.",
+    description: "Speaking up, knowing your rights, house meetings, and the Self Advocacy Subcommittee.",
     keywords: "rights advocacy code of rights speak up sub committee voice"
   },
   {
@@ -143,8 +143,8 @@ const searchItems = [
   {
     title: "Stories",
     url: "stories.html",
-    description: "Aspire stories shared with consent, dignity, and privacy.",
-    keywords: "stories testimonials consent privacy person directed support"
+    description: "Stories about choice, confidence, connection, and everyday life.",
+    keywords: "stories testimonials choice confidence connection person directed support"
   },
   {
     title: "Join The Team",
@@ -551,7 +551,7 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
     event.preventDefault();
     const status = form.querySelector("[data-form-status]");
     if (status) {
-      status.textContent = "This form needs to be connected to a secure submission service before launch. Please email reception@aspire.org.nz or call 07 839 0183.";
+      status.textContent = "Online enquiries are not active yet. Please email reception@aspire.org.nz or call 07 839 0183.";
     }
   });
 });
@@ -936,7 +936,7 @@ if (jobOpeningsMount && window.AspireJobOpenings) {
     article.className = "card vacancy-card";
     appendText(article, "span", "Current openings", "kicker");
     appendText(article, "h3", "No current vacancies listed");
-    appendText(article, "p", "Please register your interest below and Aspire can keep your details for suitable future opportunities once the recruitment workflow is connected.");
+    appendText(article, "p", "Please register your interest and Aspire can consider your details for suitable future opportunities.");
     appendAction(article, "application.html", "Register interest");
     jobOpeningsMount.append(article);
   }
@@ -970,7 +970,7 @@ if (applicationForm) {
     event.preventDefault();
     const status = applicationForm.querySelector("[data-form-status]");
     if (status) {
-      status.textContent = "This application form is ready for SharePoint or another secure recruitment workflow. Please connect the form before launch so CVs and cover letters are stored safely.";
+      status.textContent = "Online applications are not active yet. Please email your CV or contact Aspire to discuss your interest.";
     }
   });
 }
