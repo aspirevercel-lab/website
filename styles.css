@@ -1247,7 +1247,8 @@ textarea {
 }
 
 .accessibility-toggle:focus-visible,
-.accessibility-tool:focus-visible {
+.accessibility-tool:focus-visible,
+.accessibility-close:focus-visible {
   outline: 3px solid rgba(230, 181, 74, 0.95);
   outline-offset: 3px;
 }
@@ -1270,9 +1271,33 @@ textarea {
   display: none;
 }
 
-.accessibility-panel h2 {
+.accessibility-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 14px;
+}
+
+.accessibility-panel h2 {
   font-size: 1.1rem;
+}
+
+.accessibility-close {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 6px 8px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.accessibility-close:hover {
+  background: #eaf4ef;
+  color: var(--green-dark);
 }
 
 .accessibility-status {
@@ -1359,6 +1384,7 @@ html.a11y-high-contrast .service-panel,
 html.a11y-high-contrast .profile-detail,
 html.a11y-high-contrast .search-panel-inner,
 html.a11y-high-contrast .accessibility-panel,
+html.a11y-high-contrast .accessibility-close,
 html.a11y-high-contrast input,
 html.a11y-high-contrast select,
 html.a11y-high-contrast textarea {
@@ -1376,7 +1402,8 @@ html.a11y-high-contrast .card li,
 html.a11y-high-contrast .kicker,
 html.a11y-high-contrast .nav-links a,
 html.a11y-high-contrast .search-open,
-html.a11y-high-contrast .accessibility-tool {
+html.a11y-high-contrast .accessibility-tool,
+html.a11y-high-contrast .accessibility-close {
   color: #fff;
 }
 

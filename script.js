@@ -201,6 +201,44 @@ function normalizeSearchText(value) {
   return (value || "").toString().toLowerCase().replace(/\s+/g, " ").trim();
 }
 
+const focusableSelector = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "[tabindex]:not([tabindex='-1'])"
+].join(",");
+
+function getFocusableElements(container) {
+  return Array.from(container.querySelectorAll(focusableSelector)).filter((element) => {
+    return element.getClientRects().length > 0 || element === document.activeElement;
+  });
+}
+
+function trapFocus(event, container) {
+  if (event.key !== "Tab") {
+    return;
+  }
+
+  const focusableElements = getFocusableElements(container);
+  if (!focusableElements.length) {
+    event.preventDefault();
+    return;
+  }
+
+  const firstElement = focusableElements[0];
+  const lastElement = focusableElements[focusableElements.length - 1];
+
+  if (event.shiftKey && document.activeElement === firstElement) {
+    event.preventDefault();
+    lastElement.focus();
+  } else if (!event.shiftKey && document.activeElement === lastElement) {
+    event.preventDefault();
+    firstElement.focus();
+  }
+}
+
 function scoreSearchItem(item, query) {
   const normalizedQuery = normalizeSearchText(query);
   if (!normalizedQuery) {
@@ -351,6 +389,12 @@ function setupGlobalSearch() {
       closeSearch();
     }
   });
+  panel.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeSearch();
+    }
+    trapFocus(event, panel);
+  });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !panel.hasAttribute("hidden")) {
       closeSearch();
@@ -450,9 +494,17 @@ function setupAccessibilityTools() {
   panel.className = "accessibility-panel";
   panel.id = "accessibility-panel";
   panel.setAttribute("hidden", "");
+  const panelHeader = document.createElement("div");
+  panelHeader.className = "accessibility-panel-header";
   const title = document.createElement("h2");
   title.textContent = "Accessibility Tools";
-  panel.append(title);
+  const closeAccessibilityButton = document.createElement("button");
+  closeAccessibilityButton.type = "button";
+  closeAccessibilityButton.className = "accessibility-close";
+  closeAccessibilityButton.setAttribute("aria-label", "Close accessibility tools");
+  closeAccessibilityButton.textContent = "Close";
+  panelHeader.append(title, closeAccessibilityButton);
+  panel.append(panelHeader);
 
   const speechSupported = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
   let accessibilitySpeech = null;
@@ -495,7 +547,7 @@ function setupAccessibilityTools() {
     lastSpokenText = trimmedText;
     accessibilitySpeech = new SpeechSynthesisUtterance(trimmedText);
     accessibilitySpeech.lang = document.documentElement.lang || "en-NZ";
-    accessibilitySpeech.rate = 0.78;
+    accessibilitySpeech.rate = 0.68;
     accessibilitySpeech.pitch = 1;
     accessibilitySpeech.onend = () => {
       accessibilitySpeech = null;
@@ -519,7 +571,7 @@ function setupAccessibilityTools() {
 
     accessibilitySpeech = new SpeechSynthesisUtterance(voiceGuideText);
     accessibilitySpeech.lang = document.documentElement.lang || "en-NZ";
-    accessibilitySpeech.rate = 0.78;
+    accessibilitySpeech.rate = 0.68;
     accessibilitySpeech.pitch = 1;
     accessibilitySpeech.onend = () => {
       accessibilitySpeech = null;
@@ -655,6 +707,10 @@ function setupAccessibilityTools() {
   function openPanel() {
     panel.removeAttribute("hidden");
     toggleButton.setAttribute("aria-expanded", "true");
+    const firstFocusable = getFocusableElements(panel)[0];
+    if (firstFocusable) {
+      firstFocusable.focus();
+    }
   }
 
   function closePanel() {
@@ -662,6 +718,11 @@ function setupAccessibilityTools() {
     toggleButton.setAttribute("aria-expanded", "false");
     stopAccessibilitySpeech();
   }
+
+  closeAccessibilityButton.addEventListener("click", () => {
+    closePanel();
+    toggleButton.focus();
+  });
 
   toggleButton.addEventListener("click", () => {
     if (panel.hasAttribute("hidden")) {
@@ -676,6 +737,14 @@ function setupAccessibilityTools() {
       closePanel();
       toggleButton.focus();
     }
+  });
+
+  panel.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closePanel();
+      toggleButton.focus();
+    }
+    trapFocus(event, panel);
   });
 
   widget.append(panel, toggleButton);
