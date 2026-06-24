@@ -394,15 +394,18 @@ const accessibilityDefaults = {
   grayscale: false,
   contrast: "default",
   underlineLinks: false,
-  readableFont: false
+  readableFont: false,
+  hoverReader: false
 };
 
 function getAccessibilityState() {
   try {
-    return {
+    const storedState = {
       ...accessibilityDefaults,
       ...JSON.parse(localStorage.getItem("aspire-accessibility") || "{}")
     };
+    storedState.hoverReader = false;
+    return storedState;
   } catch {
     return { ...accessibilityDefaults };
   }
@@ -454,7 +457,9 @@ function setupAccessibilityTools() {
 
   const speechSupported = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
   let accessibilitySpeech = null;
-  const voiceGuideText = "Accessibility tools. Use these options to make the website easier to read. You can increase text, decrease text, turn on grayscale, use high contrast, use negative contrast, choose a light background, underline links, switch to a readable font, or reset all accessibility settings.";
+  let hoverReaderTimer = null;
+  let lastSpokenText = "";
+  const voiceGuideText = "Accessibility tools. Use these options to make the website easier to read. You can increase text, decrease text, turn on grayscale, use high contrast, use negative contrast, choose a light background, underline links, switch to a readable font, turn on the hover reader, or reset all accessibility settings.";
   const listenButton = document.createElement("button");
   listenButton.type = "button";
   listenButton.className = "accessibility-tool accessibility-listen";
@@ -476,6 +481,31 @@ function setupAccessibilityTools() {
     listenButton.textContent = "Listen to options";
     listenButton.setAttribute("aria-label", "Listen to accessibility options");
     voiceStatus.textContent = "Voice guide stopped.";
+  }
+
+  function speakAccessibilityText(text) {
+    if (!speechSupported || !text) {
+      return;
+    }
+
+    const trimmedText = text.replace(/\s+/g, " ").trim().slice(0, 260);
+    if (!trimmedText || trimmedText === lastSpokenText) {
+      return;
+    }
+
+    lastSpokenText = trimmedText;
+    accessibilitySpeech = new SpeechSynthesisUtterance(trimmedText);
+    accessibilitySpeech.lang = document.documentElement.lang || "en-NZ";
+    accessibilitySpeech.rate = 0.92;
+    accessibilitySpeech.pitch = 1;
+    accessibilitySpeech.onend = () => {
+      accessibilitySpeech = null;
+    };
+    accessibilitySpeech.onerror = () => {
+      accessibilitySpeech = null;
+    };
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(accessibilitySpeech);
   }
 
   function playAccessibilitySpeech() {
@@ -512,6 +542,47 @@ function setupAccessibilityTools() {
   }
 
   listenButton.addEventListener("click", playAccessibilitySpeech);
+
+  function getReadableHoverText(target) {
+    if (!target || !state.hoverReader) {
+      return "";
+    }
+
+    const readableNode = target.closest("a, button, h1, h2, h3, h4, p, li, label, summary");
+    if (!readableNode || widget.contains(readableNode)) {
+      return "";
+    }
+
+    if (readableNode.matches("input, select, textarea")) {
+      return readableNode.getAttribute("aria-label") || readableNode.getAttribute("placeholder") || "";
+    }
+
+    return readableNode.getAttribute("aria-label") || readableNode.textContent || "";
+  }
+
+  function queueHoverSpeech(event) {
+    if (!speechSupported || !state.hoverReader) {
+      return;
+    }
+
+    const text = getReadableHoverText(event.target);
+    window.clearTimeout(hoverReaderTimer);
+    if (!text) {
+      return;
+    }
+
+    hoverReaderTimer = window.setTimeout(() => {
+      speakAccessibilityText(text);
+    }, 320);
+  }
+
+  function stopHoverSpeechQueue() {
+    window.clearTimeout(hoverReaderTimer);
+  }
+
+  document.addEventListener("mouseover", queueHoverSpeech);
+  document.addEventListener("focusin", queueHoverSpeech);
+  document.addEventListener("mouseout", stopHoverSpeechQueue);
 
   function updateState(updater) {
     state = updater({ ...state });
@@ -559,6 +630,18 @@ function setupAccessibilityTools() {
   }));
   addTool("Readable Font", () => updateState((next) => {
     next.readableFont = !next.readableFont;
+    return next;
+  }));
+  const hoverReaderButton = addTool("Hover Reader: Off", () => updateState((next) => {
+    next.hoverReader = !next.hoverReader;
+    hoverReaderButton.textContent = next.hoverReader ? "Hover Reader: On" : "Hover Reader: Off";
+    voiceStatus.textContent = next.hoverReader
+      ? "Hover reader on. Move over page text or links to hear them."
+      : "Hover reader off.";
+    if (!next.hoverReader) {
+      lastSpokenText = "";
+      stopAccessibilitySpeech();
+    }
     return next;
   }));
   addTool("Reset", () => {
