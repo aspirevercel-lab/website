@@ -404,7 +404,6 @@ function getAccessibilityState() {
       ...accessibilityDefaults,
       ...JSON.parse(localStorage.getItem("aspire-accessibility") || "{}")
     };
-    storedState.hoverReader = false;
     return storedState;
   } catch {
     return { ...accessibilityDefaults };
@@ -632,7 +631,7 @@ function setupAccessibilityTools() {
     next.readableFont = !next.readableFont;
     return next;
   }));
-  const hoverReaderButton = addTool("Hover Reader: Off", () => updateState((next) => {
+  const hoverReaderButton = addTool(state.hoverReader ? "Hover Reader: On" : "Hover Reader: Off", () => updateState((next) => {
     next.hoverReader = !next.hoverReader;
     hoverReaderButton.textContent = next.hoverReader ? "Hover Reader: On" : "Hover Reader: Off";
     voiceStatus.textContent = next.hoverReader
@@ -648,6 +647,9 @@ function setupAccessibilityTools() {
     state = { ...accessibilityDefaults };
     saveAccessibilityState(state);
     applyAccessibilityState(state);
+    hoverReaderButton.textContent = "Hover Reader: Off";
+    lastSpokenText = "";
+    stopAccessibilitySpeech();
   });
 
   function openPanel() {
