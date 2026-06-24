@@ -169,6 +169,12 @@ const searchItems = [
     url: "feedback.html",
     description: "How to raise feedback, complaints, concerns, rights, and advocacy matters.",
     keywords: "feedback complaint concern rights advocacy improve"
+  },
+  {
+    title: "Accessibility Tools",
+    url: "#accessibility-tools",
+    description: "Open website accessibility options including text size, contrast, underline links, readable font, voice guide, and Hover Reader.",
+    keywords: "accessibility accessability wheelchair hover reader voice read aloud listen speech text size increase decrease contrast grayscale links underline readable font keyboard"
   }
 ];
 
@@ -239,6 +245,42 @@ function trapFocus(event, container) {
   }
 }
 
+function shouldIgnoreArrowNavigation(element) {
+  return element && (
+    element.matches("input, textarea, select") ||
+    element.isContentEditable
+  );
+}
+
+function moveFocusWithArrow(event, container) {
+  const forwardKeys = ["ArrowDown", "ArrowRight"];
+  const backwardKeys = ["ArrowUp", "ArrowLeft"];
+  if (![...forwardKeys, ...backwardKeys, "Home", "End"].includes(event.key) || shouldIgnoreArrowNavigation(event.target)) {
+    return;
+  }
+
+  const focusableElements = getFocusableElements(container);
+  if (!focusableElements.length || !focusableElements.includes(document.activeElement)) {
+    return;
+  }
+
+  event.preventDefault();
+  const currentIndex = focusableElements.indexOf(document.activeElement);
+  let nextIndex = currentIndex;
+
+  if (forwardKeys.includes(event.key)) {
+    nextIndex = (currentIndex + 1) % focusableElements.length;
+  } else if (backwardKeys.includes(event.key)) {
+    nextIndex = (currentIndex - 1 + focusableElements.length) % focusableElements.length;
+  } else if (event.key === "Home") {
+    nextIndex = 0;
+  } else if (event.key === "End") {
+    nextIndex = focusableElements.length - 1;
+  }
+
+  focusableElements[nextIndex].focus();
+}
+
 function scoreSearchItem(item, query) {
   const normalizedQuery = normalizeSearchText(query);
   if (!normalizedQuery) {
@@ -276,6 +318,12 @@ function createSearchResult(item) {
   const link = document.createElement("a");
   link.className = "search-result";
   link.href = item.url;
+  if (item.url === "#accessibility-tools") {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      document.dispatchEvent(new CustomEvent("aspire:open-accessibility-tools"));
+    });
+  }
   appendText(link, "strong", item.title);
   appendText(link, "span", item.description);
   return link;
@@ -322,6 +370,7 @@ function setupGlobalSearch() {
   searchButton.textContent = "";
   if (navLinksNode) {
     navLinksNode.insertBefore(searchButton, navLinksNode.querySelector(".language-switch"));
+    navLinksNode.addEventListener("keydown", (event) => moveFocusWithArrow(event, navLinksNode));
   } else {
     navWrap.insertBefore(searchButton, navToggle || navWrap.firstChild);
   }
@@ -384,6 +433,15 @@ function setupGlobalSearch() {
 
   searchButton.addEventListener("click", openSearch);
   closeButton.addEventListener("click", closeSearch);
+  document.addEventListener("keydown", (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "f") {
+      event.preventDefault();
+      openSearch();
+    }
+  });
+  document.addEventListener("aspire:open-accessibility-tools", () => {
+    closeSearch();
+  });
   panel.addEventListener("click", (event) => {
     if (event.target === panel) {
       closeSearch();
@@ -393,6 +451,7 @@ function setupGlobalSearch() {
     if (event.key === "Escape") {
       closeSearch();
     }
+    moveFocusWithArrow(event, panel);
     trapFocus(event, panel);
   });
   document.addEventListener("keydown", (event) => {
@@ -724,6 +783,10 @@ function setupAccessibilityTools() {
     toggleButton.focus();
   });
 
+  document.addEventListener("aspire:open-accessibility-tools", () => {
+    openPanel();
+  });
+
   toggleButton.addEventListener("click", () => {
     if (panel.hasAttribute("hidden")) {
       openPanel();
@@ -744,6 +807,7 @@ function setupAccessibilityTools() {
       closePanel();
       toggleButton.focus();
     }
+    moveFocusWithArrow(event, panel);
     trapFocus(event, panel);
   });
 
