@@ -29,6 +29,8 @@
             <select name="role" data-role-field required>
               <option value="">Select a role</option>
               <option>Support Worker</option>
+              <option>Support Manager</option>
+              <option>Team Lead</option>
               <option>Foundation Community Support</option>
               <option>Leadership or administration</option>
               <option>General expression of interest</option>
@@ -59,6 +61,18 @@
             <input name="location" autocomplete="address-level2" placeholder="Hamilton, Waikato, or nearby area">
           </label>
           <label>
+            Work rights
+            <select name="workRights" required>
+              <option value="">Select work rights</option>
+              <option>NZ Citizen</option>
+              <option>NZ Permanent Resident</option>
+              <option>Work Visa</option>
+              <option>Student Visa</option>
+              <option>Visitor Visa</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>
             Work availability
             <select name="availability">
               <option value="">Select availability</option>
@@ -66,6 +80,26 @@
               <option>Part time</option>
               <option>Casual</option>
               <option>Flexible</option>
+            </select>
+          </label>
+          <fieldset class="option-group">
+            <legend>Days available</legend>
+            <p>We are a 7 day, 24/7 service. What is your availability?</p>
+            <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Monday">Monday</label>
+            <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Tuesday">Tuesday</label>
+            <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Wednesday">Wednesday</label>
+            <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Thursday">Thursday</label>
+            <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Friday">Friday</label>
+            <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Saturday">Saturday</label>
+            <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Sunday">Sunday</label>
+            <label class="checkbox-label"><input type="checkbox" name="daysAvailable" value="Flexible across seven days">Flexible across seven days</label>
+          </fieldset>
+          <label>
+            Can you work evenings and sleepovers?
+            <select name="eveningsSleepovers" required>
+              <option value="">Select an option</option>
+              <option>Yes</option>
+              <option>No</option>
             </select>
           </label>
           <label>

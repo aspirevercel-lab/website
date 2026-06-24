@@ -1018,6 +1018,26 @@ p {
   box-shadow: none;
 }
 
+.option-group {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid #cddbd7;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.58));
+}
+
+.option-group legend {
+  padding: 0 6px;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.option-group p {
+  color: var(--muted);
+}
+
 .contact-list li {
   display: grid;
   gap: 3px;
