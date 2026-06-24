@@ -1242,6 +1242,7 @@ if (applicationForm) {
   const medicalQuestions = Array.from(applicationForm.querySelectorAll("[data-medical-question]"));
   const medicalDetailsField = applicationForm.querySelector("[data-medical-details]");
   const medicalDetailsText = medicalDetailsField ? medicalDetailsField.querySelector("textarea") : null;
+  const yesRequiredFields = Array.from(applicationForm.querySelectorAll("[data-requires-yes]"));
 
   function updateLicenceTypeVisibility() {
     if (!fullLicenceField || !licenceTypeField || !licenceTypeSelect) {
@@ -1282,6 +1283,11 @@ if (applicationForm) {
     }
   }
 
+  function updateYesRequiredField(field) {
+    const message = field.getAttribute("data-requires-yes") || "Please select Yes to continue.";
+    field.setCustomValidity(field.value && field.value !== "Yes" ? message : "");
+  }
+
   if (fullLicenceField) {
     fullLicenceField.addEventListener("change", updateLicenceTypeVisibility);
     updateLicenceTypeVisibility();
@@ -1296,6 +1302,11 @@ if (applicationForm) {
     question.addEventListener("change", updateMedicalDetailsVisibility);
   });
   updateMedicalDetailsVisibility();
+
+  yesRequiredFields.forEach((field) => {
+    field.addEventListener("change", () => updateYesRequiredField(field));
+    updateYesRequiredField(field);
+  });
 
   if (roleFromUrl && roleField) {
     const matchingOption = Array.from(roleField.options).find((option) => option.text === roleFromUrl);
