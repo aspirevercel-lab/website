@@ -1007,15 +1007,23 @@ p {
 
 .checkbox-label {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   font-weight: 700;
+  min-height: 32px;
 }
 
 .checkbox-label input {
-  width: auto;
-  margin-top: 6px;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  padding: 0;
+  border-radius: 4px;
+  background: #fff;
   box-shadow: none;
+  accent-color: var(--green);
+  transition: none;
 }
 
 .option-group {
@@ -1036,6 +1044,10 @@ p {
 
 .option-group p {
   color: var(--muted);
+}
+
+.option-group .checkbox-label {
+  color: var(--ink);
 }
 
 .contact-list li {

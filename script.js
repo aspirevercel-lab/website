@@ -1233,6 +1233,49 @@ const applicationForm = document.querySelector("[data-application-form]");
 if (applicationForm) {
   const roleFromUrl = new URLSearchParams(window.location.search).get("role");
   const roleField = applicationForm.querySelector("[data-role-field]");
+  const fullLicenceField = applicationForm.querySelector("[data-full-licence]");
+  const licenceTypeField = applicationForm.querySelector("[data-licence-type]");
+  const licenceTypeSelect = licenceTypeField ? licenceTypeField.querySelector("select") : null;
+  const vettingQuestions = Array.from(applicationForm.querySelectorAll("[data-vetting-question]"));
+  const vettingDetailsField = applicationForm.querySelector("[data-vetting-details]");
+  const vettingDetailsText = vettingDetailsField ? vettingDetailsField.querySelector("textarea") : null;
+
+  function updateLicenceTypeVisibility() {
+    if (!fullLicenceField || !licenceTypeField || !licenceTypeSelect) {
+      return;
+    }
+
+    const shouldShowLicenceType = fullLicenceField.value === "No";
+    licenceTypeField.hidden = !shouldShowLicenceType;
+    licenceTypeSelect.required = shouldShowLicenceType;
+    if (!shouldShowLicenceType) {
+      licenceTypeSelect.value = "";
+    }
+  }
+
+  function updateVettingDetailsVisibility() {
+    if (!vettingDetailsField || !vettingDetailsText) {
+      return;
+    }
+
+    const requiresDetails = vettingQuestions.some((question) => question.value === "Yes");
+    vettingDetailsField.hidden = !requiresDetails;
+    vettingDetailsText.required = requiresDetails;
+    if (!requiresDetails) {
+      vettingDetailsText.value = "";
+    }
+  }
+
+  if (fullLicenceField) {
+    fullLicenceField.addEventListener("change", updateLicenceTypeVisibility);
+    updateLicenceTypeVisibility();
+  }
+
+  vettingQuestions.forEach((question) => {
+    question.addEventListener("change", updateVettingDetailsVisibility);
+  });
+  updateVettingDetailsVisibility();
+
   if (roleFromUrl && roleField) {
     const matchingOption = Array.from(roleField.options).find((option) => option.text === roleFromUrl);
     if (matchingOption) {

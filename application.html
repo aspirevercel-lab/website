@@ -102,6 +102,56 @@
               <option>No</option>
             </select>
           </label>
+          <fieldset class="option-group">
+            <legend>Vetting Checks</legend>
+            <p>All people employed by Aspire Community Support are required to undergo Police and Oranga Tamariki (OT) vetting checks.</p>
+            <p>You are obliged to inform us if your conviction is covered by the Criminal Records (Clean Slate) Act 2004.</p>
+            <label>
+              Have you been convicted of a criminal offence in New Zealand or any country other than a minor traffic violation, or are you waiting for the hearing of any charges in relation to any such criminal convictions?
+              <select name="criminalConviction" data-vetting-question required>
+                <option value="">Select an option</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </label>
+            <p>You are obliged to inform us if your conviction is covered by the Criminal Records (Clean Slate) Act 2004.</p>
+            <label>
+              Are there any pending charges against you?
+              <select name="pendingCharges" data-vetting-question required>
+                <option value="">Select an option</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </label>
+            <label data-vetting-details hidden>
+              If you answered yes to any vetting question, please provide specific details of the nature of the convictions or pending charges.
+              <textarea name="vettingDetails"></textarea>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="vettingConsent" required>
+              I consent to Aspire Community Support completing Police and Oranga Tamariki vetting checks as part of the recruitment process.
+            </label>
+          </fieldset>
+          <fieldset class="option-group">
+            <legend>Driver Licence</legend>
+            <label>
+              Do you have a current full NZ driver licence?
+              <select name="fullNzDriverLicence" data-full-licence required>
+                <option value="">Select an option</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </label>
+            <label data-licence-type hidden>
+              Licence type
+              <select name="licenceType">
+                <option value="">Select licence type</option>
+                <option>Restricted</option>
+                <option>Learners</option>
+                <option>International</option>
+              </select>
+            </label>
+          </fieldset>
           <label>
             Upload CV
             <input type="file" name="cv" accept=".pdf,.doc,.docx">
