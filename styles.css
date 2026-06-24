@@ -1275,6 +1275,12 @@ textarea {
   font-size: 1.1rem;
 }
 
+.accessibility-status {
+  margin: 4px 0 10px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
 .accessibility-tool {
   width: 100%;
   min-height: 38px;
@@ -1291,6 +1297,23 @@ textarea {
 }
 
 .accessibility-tool:hover {
+  background: #eaf4ef;
+  color: var(--green-dark);
+}
+
+.accessibility-tool:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.accessibility-tool:disabled:hover {
+  background: transparent;
+  color: var(--muted);
+}
+
+.accessibility-listen {
+  margin-bottom: 4px;
   background: #eaf4ef;
   color: var(--green-dark);
 }

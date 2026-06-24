@@ -452,6 +452,67 @@ function setupAccessibilityTools() {
   title.textContent = "Accessibility Tools";
   panel.append(title);
 
+  const speechSupported = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+  let accessibilitySpeech = null;
+  const voiceGuideText = "Accessibility tools. Use these options to make the website easier to read. You can increase text, decrease text, turn on grayscale, use high contrast, use negative contrast, choose a light background, underline links, switch to a readable font, or reset all accessibility settings.";
+  const listenButton = document.createElement("button");
+  listenButton.type = "button";
+  listenButton.className = "accessibility-tool accessibility-listen";
+  listenButton.textContent = speechSupported ? "Listen to options" : "Voice guide unavailable";
+  listenButton.disabled = !speechSupported;
+  listenButton.setAttribute("aria-label", speechSupported ? "Listen to accessibility options" : "Voice guide is not available in this browser");
+  const voiceStatus = document.createElement("p");
+  voiceStatus.className = "accessibility-status";
+  voiceStatus.setAttribute("aria-live", "polite");
+  voiceStatus.textContent = speechSupported ? "Voice guide is optional." : "Your browser does not support the voice guide.";
+  panel.append(listenButton, voiceStatus);
+
+  function stopAccessibilitySpeech() {
+    if (!speechSupported) {
+      return;
+    }
+    window.speechSynthesis.cancel();
+    accessibilitySpeech = null;
+    listenButton.textContent = "Listen to options";
+    listenButton.setAttribute("aria-label", "Listen to accessibility options");
+    voiceStatus.textContent = "Voice guide stopped.";
+  }
+
+  function playAccessibilitySpeech() {
+    if (!speechSupported) {
+      return;
+    }
+
+    if (window.speechSynthesis.speaking) {
+      stopAccessibilitySpeech();
+      return;
+    }
+
+    accessibilitySpeech = new SpeechSynthesisUtterance(voiceGuideText);
+    accessibilitySpeech.lang = document.documentElement.lang || "en-NZ";
+    accessibilitySpeech.rate = 0.92;
+    accessibilitySpeech.pitch = 1;
+    accessibilitySpeech.onend = () => {
+      accessibilitySpeech = null;
+      listenButton.textContent = "Listen to options";
+      listenButton.setAttribute("aria-label", "Listen to accessibility options");
+      voiceStatus.textContent = "Voice guide finished.";
+    };
+    accessibilitySpeech.onerror = () => {
+      accessibilitySpeech = null;
+      listenButton.textContent = "Listen to options";
+      listenButton.setAttribute("aria-label", "Listen to accessibility options");
+      voiceStatus.textContent = "Voice guide could not play in this browser.";
+    };
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(accessibilitySpeech);
+    listenButton.textContent = "Stop voice";
+    listenButton.setAttribute("aria-label", "Stop accessibility voice guide");
+    voiceStatus.textContent = "Voice guide playing.";
+  }
+
+  listenButton.addEventListener("click", playAccessibilitySpeech);
+
   function updateState(updater) {
     state = updater({ ...state });
     saveAccessibilityState(state);
@@ -514,6 +575,7 @@ function setupAccessibilityTools() {
   function closePanel() {
     panel.setAttribute("hidden", "");
     toggleButton.setAttribute("aria-expanded", "false");
+    stopAccessibilitySpeech();
   }
 
   toggleButton.addEventListener("click", () => {
