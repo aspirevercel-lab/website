@@ -152,6 +152,96 @@
               </select>
             </label>
           </fieldset>
+          <fieldset class="option-group">
+            <legend>Medical History &amp; Information</legend>
+            <label>
+              Are you experiencing or have you experienced any illness, ailment, or condition that may impact on your ability to carry out the role for which you have applied?
+              <select name="medicalCondition" data-medical-question required>
+                <option value="">Select an option</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </label>
+            <label>
+              Are you currently taking any medication which could impair your judgement or impact on your ability to carry out the functions of the role for which you have applied?
+              <select name="impairingMedication" data-medical-question required>
+                <option value="">Select an option</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </label>
+            <label>
+              Are you aware of any other reason why you may not be able to completely perform the normal duties associated with the type of work for which you are applying?
+              <select name="otherWorkLimitation" data-medical-question required>
+                <option value="">Select an option</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </label>
+            <label data-medical-details hidden>
+              If you answered yes to any Medical History &amp; Information question, please provide details.
+              <textarea name="medicalDetails"></textarea>
+            </label>
+          </fieldset>
+          <fieldset class="option-group">
+            <legend>Privacy</legend>
+            <p>Privacy Act Statement:</p>
+            <p>I acknowledge that personal information, including psychometric assessments, pertaining to me will be used by Aspire - Community Support for the purpose of determining my suitability for any position for which I apply. I authorise Aspire - Community Support, in their reasonable discretion, to make enquiries and collect such information from sources which are deemed appropriate, including credit and police checks.</p>
+            <label>
+              Privacy Statement Read &amp; Understood
+              <select name="privacyStatementUnderstood" required>
+                <option value="">Select an option</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </label>
+          </fieldset>
+          <fieldset class="option-group">
+            <legend>Additional Information &amp; Acknowledgement</legend>
+            <label>
+              Applications without a full CV will not be considered. Have you included a CV, including referee details, outlining your suitability for this role?
+              <select name="cvIncluded" required>
+                <option value="">Select an option</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </label>
+            <label>
+              Do you consent to Aspire - Community Support contacting your referees?
+              <select name="refereeConsent" required>
+                <option value="">Select an option</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </label>
+            <label>
+              Have you ever worked for Aspire - Community Support, formerly Hamilton Residential Trust, before?
+              <select name="previousAspireEmployment" required>
+                <option value="">Select an option</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </label>
+            <label>
+              Do you consent to Aspire - Community Support retaining the information contained in this application form for the purpose of considering your suitability for any other position which may arise in the future?
+              <select name="futureRoleConsent" required>
+                <option value="">Select an option</option>
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+            </label>
+            <label>
+              How did you hear about this role?
+              <select name="heardAboutRole" required>
+                <option value="">Select an option</option>
+                <option>Referral</option>
+                <option>Aspire's website</option>
+                <option>Seek</option>
+                <option>Facebook</option>
+                <option>CareerForce</option>
+              </select>
+            </label>
+          </fieldset>
           <label>
             Upload CV
             <input type="file" name="cv" accept=".pdf,.doc,.docx">
@@ -166,7 +256,7 @@
           </label>
           <label class="checkbox-label">
             <input type="checkbox" name="privacyConsent" required>
-            I consent to Aspire using my details for recruitment purposes.
+            I confirm the information provided in this application is true and complete, and I consent to Aspire using my details for recruitment purposes.
           </label>
           <button class="button primary" type="submit">Submit application</button>
           <p class="form-status" data-form-status aria-live="polite"></p>

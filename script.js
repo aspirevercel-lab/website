@@ -1239,6 +1239,9 @@ if (applicationForm) {
   const vettingQuestions = Array.from(applicationForm.querySelectorAll("[data-vetting-question]"));
   const vettingDetailsField = applicationForm.querySelector("[data-vetting-details]");
   const vettingDetailsText = vettingDetailsField ? vettingDetailsField.querySelector("textarea") : null;
+  const medicalQuestions = Array.from(applicationForm.querySelectorAll("[data-medical-question]"));
+  const medicalDetailsField = applicationForm.querySelector("[data-medical-details]");
+  const medicalDetailsText = medicalDetailsField ? medicalDetailsField.querySelector("textarea") : null;
 
   function updateLicenceTypeVisibility() {
     if (!fullLicenceField || !licenceTypeField || !licenceTypeSelect) {
@@ -1266,6 +1269,19 @@ if (applicationForm) {
     }
   }
 
+  function updateMedicalDetailsVisibility() {
+    if (!medicalDetailsField || !medicalDetailsText) {
+      return;
+    }
+
+    const requiresDetails = medicalQuestions.some((question) => question.value === "Yes");
+    medicalDetailsField.hidden = !requiresDetails;
+    medicalDetailsText.required = requiresDetails;
+    if (!requiresDetails) {
+      medicalDetailsText.value = "";
+    }
+  }
+
   if (fullLicenceField) {
     fullLicenceField.addEventListener("change", updateLicenceTypeVisibility);
     updateLicenceTypeVisibility();
@@ -1275,6 +1291,11 @@ if (applicationForm) {
     question.addEventListener("change", updateVettingDetailsVisibility);
   });
   updateVettingDetailsVisibility();
+
+  medicalQuestions.forEach((question) => {
+    question.addEventListener("change", updateMedicalDetailsVisibility);
+  });
+  updateMedicalDetailsVisibility();
 
   if (roleFromUrl && roleField) {
     const matchingOption = Array.from(roleField.options).find((option) => option.text === roleFromUrl);
