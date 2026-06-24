@@ -495,7 +495,7 @@ function setupAccessibilityTools() {
     lastSpokenText = trimmedText;
     accessibilitySpeech = new SpeechSynthesisUtterance(trimmedText);
     accessibilitySpeech.lang = document.documentElement.lang || "en-NZ";
-    accessibilitySpeech.rate = 0.92;
+    accessibilitySpeech.rate = 0.78;
     accessibilitySpeech.pitch = 1;
     accessibilitySpeech.onend = () => {
       accessibilitySpeech = null;
@@ -519,7 +519,7 @@ function setupAccessibilityTools() {
 
     accessibilitySpeech = new SpeechSynthesisUtterance(voiceGuideText);
     accessibilitySpeech.lang = document.documentElement.lang || "en-NZ";
-    accessibilitySpeech.rate = 0.92;
+    accessibilitySpeech.rate = 0.78;
     accessibilitySpeech.pitch = 1;
     accessibilitySpeech.onend = () => {
       accessibilitySpeech = null;
@@ -548,7 +548,7 @@ function setupAccessibilityTools() {
     }
 
     const readableNode = target.closest("a, button, h1, h2, h3, h4, p, li, label, summary");
-    if (!readableNode || widget.contains(readableNode)) {
+    if (!readableNode || toggleButton.contains(readableNode)) {
       return "";
     }
 
